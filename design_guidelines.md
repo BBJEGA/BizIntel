@@ -13,8 +13,8 @@
 ## Color System
 
 **Primary Palette:**
-- Navy Blue: #1E3A8A (primary actions, navigation highlights, key headings)
-- Bright Green: #10B981 (success states, positive metrics, CTAs, accents)
+- Vibrant Orange: #B45309 (HSL 24 95% 35%) - primary CTAs, brand accents, success metrics
+- Dark Charcoal: #1F2937 (sidebar background, navigation, primary text)
 - White: #FFFFFF (main backgrounds, card surfaces)
 - Light Gray: #F3F4F6 (secondary surfaces, subtle backgrounds, borders)
 
@@ -22,20 +22,26 @@
 - Dark Gray: #374151 (body text, secondary elements)
 - Medium Gray: #6B7280 (supporting text, labels)
 - Pale Gray: #E5E7EB (dividers, borders)
-- Navy Tint: #3B82F6 (hover states, links)
+- Deep Orange: #9A3412 (HSL 24 95% 32%) - hover states, darker accents
 
 **Semantic Colors:**
-- Success: Bright Green (#10B981)
+- Success: Vibrant Orange (#FF8C42)
 - Warning: #F59E0B
 - Error: #EF4444
-- Info: Navy Blue (#1E3A8A)
+- Info: Dark Charcoal (#1F2937)
+
+**Logo Integration:**
+- The BizIntel Enterprise logo features an orange/red gradient with a lightbulb and growth chart
+- Logo colors: Orange (#FF8C42), Red-Orange gradient, Yellow highlights (#FCD34D)
+- Logo is displayed prominently in sidebar and landing page navigation
 
 **Application Strategy:**
-- Navy blue sidebar with white text
+- Dark charcoal sidebar with white text and orange highlights for active states
 - White main content areas
 - Light gray (#F3F4F6) for card backgrounds on white surfaces
-- Bright green for primary CTAs, success metrics, positive trends
-- Navy blue for secondary buttons with border treatment
+- Vibrant orange (#B45309 / HSL 24 95% 35% - darkened for WCAG AA compliance) for primary CTAs, success metrics, positive trends
+- Dark charcoal for secondary buttons with border treatment
+- All orange/white combinations maintain 4.5:1+ contrast ratio (WCAG AA compliant)
 
 ---
 
@@ -82,15 +88,16 @@
 
 **Hero Section:**
 - Full viewport (min-h-screen) two-column layout
-- Left (55%): Navy headline, dark gray description, CTA buttons (green primary + navy secondary), trust indicator ("Trusted by 500+ enterprises")
+- Left (55%): Dark charcoal headline, dark gray description, CTA buttons (orange primary + charcoal secondary), trust indicator ("Trusted by 500+ enterprises")
 - Right (45%): Large hero image showing dashboard interface mockup with subtle shadow and rounded-2xl corners
+- Logo displayed in top navigation with brand name
 - Background: White with subtle light gray accent element
 - Mobile: Stack single column, image below content
 
 **Features Section:**
 - Three-column grid (grid-cols-1 md:grid-cols-3 gap-8)
 - Light gray background cards with white hover elevation
-- Each card: Green icon container (rounded-lg), navy title, dark gray description
+- Each card: Orange icon container (rounded-lg), dark charcoal title, dark gray description
 - Padding: py-24
 
 **How It Works:**
@@ -112,11 +119,12 @@
 ### Dashboard Layout
 
 **Sidebar Navigation:**
-- Fixed left sidebar (w-64) with navy blue background
-- White logo and text
-- Navigation items: white text with green left border on active state
-- Rounded-lg hover states with lighter navy background
-- User profile section at bottom with avatar and name
+- Fixed left sidebar (w-64) with dark charcoal background
+- BizIntel Enterprise logo (40x40px) and white text
+- Navigation items: white text with orange background on active state
+- Rounded-lg hover states with lighter charcoal background
+- Organization name displayed at bottom in orange-tinted container
+- Responsive: Hamburger menu on mobile (<768px), always visible on desktop
 
 **Top Bar:**
 - White background with pale gray bottom border
@@ -130,9 +138,10 @@
 - Grid layouts with gap-6
 
 **Analytics Cards:**
-- Three-column grid for KPI metrics
-- White cards: Large navy number (text-4xl font-bold), medium gray label, green trend indicator with arrow
-- Bar chart section below: horizontal bars with green fill, labels in dark gray
+- Total Feedback: Full-width card
+- Complaints and Suggestions: Side-by-side grid (grid-cols-2) even on mobile
+- White cards: Large charcoal number (text-4xl font-bold), medium gray label, orange trend indicator with arrow
+- Bar chart section below: horizontal bars with orange fill, labels in dark gray
 
 **Feedback Lists:**
 - White container with rounded-xl
@@ -177,8 +186,8 @@
 ## Component Library
 
 ### Buttons
-- **Primary:** Green background, white text, px-6 py-3 rounded-lg font-medium, hover: darker green
-- **Secondary:** Navy border-2, navy text, same sizing, hover: navy background with white text
+- **Primary:** Orange background (#B45309 / HSL 24 95% 35%), white text, px-6 py-3 rounded-lg font-medium, hover: deeper orange (#9A3412 / HSL 24 95% 32%)
+- **Secondary:** Charcoal border-2, charcoal text, same sizing, hover: charcoal background with white text
 - **Hero CTA:** px-8 py-4 text-lg for landing page
 - **Buttons on Images:** Backdrop blur (backdrop-blur-md) with white/10 background
 
@@ -194,26 +203,27 @@
 - **Metrics:** Large navy number, green trend arrows
 
 ### Navigation
-- **Sidebar:** Navy background, white text, green active indicator (left border-l-4)
-- **Tabs:** Navy active with green bottom border-b-2
+- **Sidebar:** Dark charcoal background, white text, orange background on active state
+- **Tabs:** Charcoal active with orange bottom border-b-2
 
 ### Badges
 - Inline-flex px-3 py-1 rounded-full text-xs font-medium
-- Complaint: Navy background, white text
-- Suggestion: Green background, white text
+- Complaint: Charcoal background, white text
+- Suggestion: Orange background, white text
 - Anonymous: Medium gray background, white text
 
 ### Data Visualizations
-- **Bar Charts:** Green filled bars (varying opacity for depth), height h-8, gap-3
-- **Trend Indicators:** Green up arrows, red down arrows, with percentages
+- **Bar Charts:** Orange filled bars (varying opacity for depth), height h-8, gap-3
+- **Trend Indicators:** Orange up arrows, red down arrows, with percentages
 
 ---
 
 ## Icons
 
-**Library:** Heroicons (CDN)
+**Library:** Lucide React
 **Sizes:** w-5 h-5 (navigation, buttons), w-6 h-6 (features), w-4 h-4 (inline status)
-**Colors:** Match parent context - green in features, white in sidebar, navy in content
+**Colors:** Match parent context - orange in features, white in sidebar, charcoal in content
+**Logo:** BizIntel Enterprise logo (40x40px) with orange/red gradient, lightbulb, and growth chart
 
 ---
 
@@ -226,11 +236,15 @@
 - Shows: Navy sidebar, analytics cards, feedback table - professional screenshot aesthetic
 
 **Feature Icons:**
-- Use Heroicons within green circular containers - no custom images needed
+- Use Lucide React icons within orange circular containers - no custom images needed
+
+**Logo:**
+- BizIntel Enterprise logo displayed in sidebar header (40x40px) and landing page navigation
+- Logo features orange/red gradient with lightbulb and growth chart imagery
 
 **Dashboard:**
-- Organization logo placeholder (40x40px square) in sidebar top
-- User avatar (32x32px circular) in sidebar bottom
+- Organization name displayed at bottom of sidebar
+- No user avatar needed
 
 ---
 
@@ -248,8 +262,10 @@
 ## Accessibility
 
 - Minimum 44x44px touch targets
-- Green/Navy color contrast meets WCAG AA (4.5:1 minimum)
-- Focus rings (green ring-2) visible on all interactive elements
+- Orange/Charcoal color contrast meets WCAG AA (4.5:1 minimum)
+- Focus rings (orange ring-2) visible on all interactive elements
 - Semantic HTML structure (nav, main, section, article)
 - All form inputs include proper labels with for attributes
-- Skip navigation link for keyboard users
+- aria-label on all icon buttons for screen readers
+- Keyboard navigation fully supported (Escape key, Tab, Enter)
+- Responsive mobile sidebar with hamburger menu and multiple close methods

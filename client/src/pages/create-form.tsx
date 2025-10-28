@@ -24,6 +24,7 @@ import { createForm, getFormsByOrgId } from "@/lib/firebase-services";
 import { insertFormSchema } from "@shared/schema";
 import { queryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
+import logoImage from "@assets/a-sophisticated-corporate-logo-design-fe_V_8XqCmZREesNjSau6f7ag_W4Px38qDSEC4uspEpAH3Kw-removebg-p_1761683074267.png";
 
 export default function CreateForm() {
   const [, setLocation] = useLocation();
@@ -170,8 +171,12 @@ export default function CreateForm() {
       >
         <div className="p-6 border-b border-sidebar-border">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <BarChart3 className="w-6 h-6 text-sidebar-primary" />
+            <div className="flex items-center gap-3">
+              <img 
+                src={logoImage} 
+                alt="BizIntel Enterprise" 
+                className="w-10 h-10 object-contain"
+              />
               <span className="text-lg font-semibold">BizIntel Enterprise</span>
             </div>
             <Button

@@ -23,6 +23,7 @@ import { useAuth } from "@/lib/auth-context";
 import { getFeedbackByOrgId } from "@/lib/firebase-services";
 import type { Feedback } from "@shared/schema";
 import { cn } from "@/lib/utils";
+import logoImage from "@assets/a-sophisticated-corporate-logo-design-fe_V_8XqCmZREesNjSau6f7ag_W4Px38qDSEC4uspEpAH3Kw-removebg-p_1761683074267.png";
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
@@ -107,8 +108,12 @@ export default function Dashboard() {
       >
         <div className="p-6 border-b border-sidebar-border">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <BarChart3 className="w-6 h-6 text-sidebar-primary" />
+            <div className="flex items-center gap-3">
+              <img 
+                src={logoImage} 
+                alt="BizIntel Enterprise" 
+                className="w-10 h-10 object-contain"
+              />
               <span className="text-lg font-semibold">BizIntel Enterprise</span>
             </div>
             <Button
@@ -199,17 +204,23 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8">
           {/* Metrics Cards */}
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[1, 2, 3].map((i) => (
-                <Card key={i} className="p-6 space-y-2">
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-10 w-16" />
-                </Card>
-              ))}
+            <div className="space-y-6">
+              <Card className="p-6 space-y-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-10 w-16" />
+              </Card>
+              <div className="grid grid-cols-2 gap-4 md:gap-6">
+                {[1, 2].map((i) => (
+                  <Card key={i} className="p-6 space-y-2">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-10 w-16" />
+                  </Card>
+                ))}
+              </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Total Feedback */}
+            <div className="space-y-6">
+              {/* Total Feedback - Full Width */}
               <Card className="p-6 space-y-2">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-muted-foreground">
@@ -227,45 +238,48 @@ export default function Dashboard() {
                 </div>
               </Card>
 
-              {/* Complaints */}
-              <Card className="p-6 space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    Complaints
-                  </p>
-                  <AlertCircle className="w-4 h-4 text-muted-foreground" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-4xl font-bold text-destructive" data-testid="metric-complaints">
-                    {complaints.length}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {feedback.length > 0 
-                      ? `${Math.round((complaints.length / feedback.length) * 100)}% of total` 
-                      : "No complaints yet"}
-                  </p>
-                </div>
-              </Card>
+              {/* Complaints and Suggestions - Side by Side on Mobile */}
+              <div className="grid grid-cols-2 gap-4 md:gap-6">
+                {/* Complaints */}
+                <Card className="p-6 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Complaints
+                    </p>
+                    <AlertCircle className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-4xl font-bold text-destructive" data-testid="metric-complaints">
+                      {complaints.length}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {feedback.length > 0 
+                        ? `${Math.round((complaints.length / feedback.length) * 100)}% of total` 
+                        : "No complaints yet"}
+                    </p>
+                  </div>
+                </Card>
 
-              {/* Suggestions */}
-              <Card className="p-6 space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    Suggestions
-                  </p>
-                  <TrendingUp className="w-4 h-4 text-muted-foreground" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-4xl font-bold text-chart-1" data-testid="metric-suggestions">
-                    {suggestions.length}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {feedback.length > 0 
-                      ? `${Math.round((suggestions.length / feedback.length) * 100)}% of total` 
-                      : "No suggestions yet"}
-                  </p>
-                </div>
-              </Card>
+                {/* Suggestions */}
+                <Card className="p-6 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Suggestions
+                    </p>
+                    <TrendingUp className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-4xl font-bold text-chart-1" data-testid="metric-suggestions">
+                      {suggestions.length}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {feedback.length > 0 
+                        ? `${Math.round((suggestions.length / feedback.length) * 100)}% of total` 
+                        : "No suggestions yet"}
+                    </p>
+                  </div>
+                </Card>
+              </div>
             </div>
           )}
 

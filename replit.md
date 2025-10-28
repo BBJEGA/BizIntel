@@ -6,7 +6,25 @@ A professional B2B SaaS feedback management platform built with React, Vite, and
 ## Recent Changes
 **Date: October 28, 2025**
 
-**Latest: Responsive Sidebar with Full Accessibility**
+**Latest: Logo Integration & Orange Color Palette**
+- ✅ Integrated BizIntel Enterprise logo throughout the platform:
+  - Logo displays in sidebar header (dashboard and create-form pages)
+  - Logo appears in landing page navigation
+  - 40x40px logo featuring orange/red gradient with lightbulb and growth chart
+- ✅ Updated color scheme to match logo's orange/red gradient:
+  - Primary: Vibrant Orange #B45309 (HSL 24 95% 35%) - WCAG AA compliant
+  - Accent: Deep Orange #9A3412 (HSL 24 95% 32%)
+  - Sidebar: Dark Charcoal #1F2937 (220 14% 14%) with white text
+  - Orange highlights for CTAs, active navigation states, success metrics
+  - All charts updated to use orange color scheme
+  - Darkened orange values ensure 4.5:1+ contrast ratio with white text
+- ✅ Fixed dashboard card layout for mobile:
+  - Total Feedback: Full-width card
+  - Complaints & Suggestions: Side-by-side (grid-cols-2) even on mobile phones
+  - Improved mobile UX with better information density
+- ✅ Updated design_guidelines.md with complete orange/charcoal color palette
+
+**Earlier Today: Responsive Sidebar with Full Accessibility**
 - ✅ Updated brand identity to "BizIntel Enterprise" across all pages
 - ✅ Implemented professional color scheme:
   - Primary (CTAs): Bright green #10B981 (160 84% 39%)
@@ -150,12 +168,13 @@ The app uses Firebase for authentication and database. Configuration is stored i
 ### Design System
 Following professional SaaS design patterns inspired by Linear, Notion, and Stripe:
 - **Typography:** Inter font family
+- **Logo:** BizIntel Enterprise logo with orange/red gradient, lightbulb, and growth chart (40x40px)
 - **Colors:** 
-  - Primary (CTAs): Bright green #10B981
-  - Accent: Navy blue #1E3A8A  
-  - Sidebar: Navy blue background with white text
+  - Primary (CTAs): Vibrant Orange #B45309 (HSL 24 95% 35%) - WCAG AA compliant
+  - Accent: Deep Orange #9A3412 (HSL 24 95% 32%)
+  - Sidebar: Dark Charcoal #1F2937 with white text
   - Cards: Light gray #F3F4F6 on white backgrounds
-  - 7.2:1 contrast ratio on CTAs (WCAG AA compliant)
+  - All orange/white combinations maintain 4.5:1+ contrast ratio (WCAG AA)
 - **Spacing:** Consistent 4, 6, 8, 12, 16, 20, 24, 32 spacing scale
 - **Components:** Shadcn UI with custom elevation system
 - **Layout:** Responsive sidebar navigation (desktop: always visible, mobile: hamburger menu), max-w-7xl containers
