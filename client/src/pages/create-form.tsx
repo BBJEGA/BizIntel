@@ -23,6 +23,7 @@ import { useAuth } from "@/lib/auth-context";
 import { createForm, getFormsByOrgId } from "@/lib/firebase-services";
 import { insertFormSchema } from "@shared/schema";
 import { queryClient } from "@/lib/queryClient";
+import { cn } from "@/lib/utils";
 
 export default function CreateForm() {
   const [, setLocation] = useLocation();
@@ -160,12 +161,13 @@ export default function CreateForm() {
       )}
 
       {/* Sidebar */}
-      <aside className={`
-        fixed md:static inset-y-0 left-0 z-50
-        w-64 border-r bg-sidebar text-sidebar-foreground flex flex-col
-        transform transition-transform duration-300 ease-in-out
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-      `}>
+      <aside 
+        className={[
+          "fixed md:static inset-y-0 left-0 z-50 w-64 border-r bg-sidebar text-sidebar-foreground flex flex-col transform transition-transform duration-300 ease-in-out",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full",
+          "md:!translate-x-0"
+        ].join(" ")}
+      >
         <div className="p-6 border-b border-sidebar-border">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
@@ -186,7 +188,7 @@ export default function CreateForm() {
         </div>
 
         <nav className="flex-1 p-4 space-y-2">
-          <Link href="/dashboard">
+          <Link href="/dashboard" onClick={() => setSidebarOpen(false)}>
             <Button 
               variant="ghost" 
               className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
