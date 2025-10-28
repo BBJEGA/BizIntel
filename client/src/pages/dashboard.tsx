@@ -15,7 +15,9 @@ import {
   Calendar,
   LogOut,
   FileText,
-  Home
+  Home,
+  Menu,
+  X
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { getFeedbackByOrgId } from "@/lib/firebase-services";
@@ -25,6 +27,7 @@ export default function Dashboard() {
   const [, setLocation] = useLocation();
   const { user, organization, logout, loading: authLoading } = useAuth();
   const [selectedTab, setSelectedTab] = useState("all");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -32,6 +35,17 @@ export default function Dashboard() {
       setLocation("/login");
     }
   }, [user, authLoading, setLocation]);
+
+  // Handle Escape key to close sidebar
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && sidebarOpen) {
+        setSidebarOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [sidebarOpen]);
 
   // Fetch feedback data
   const orgId = organization?.id || user?.uid;
@@ -73,12 +87,38 @@ export default function Dashboard() {
 
   return (
     <div className="flex h-screen bg-background">
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+          data-testid="sidebar-overlay"
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 border-r bg-sidebar text-sidebar-foreground flex flex-col">
+      <aside className={`
+        fixed md:static inset-y-0 left-0 z-50
+        w-64 border-r bg-sidebar text-sidebar-foreground flex flex-col
+        transform transition-transform duration-300 ease-in-out
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
         <div className="p-6 border-b border-sidebar-border">
-          <div className="flex items-center gap-2">
-            <BarChart3 className="w-6 h-6 text-sidebar-primary" />
-            <span className="text-lg font-semibold">BizIntel Enterprise</span>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-6 h-6 text-sidebar-primary" />
+              <span className="text-lg font-semibold">BizIntel Enterprise</span>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden text-sidebar-foreground hover:bg-sidebar-accent"
+              onClick={() => setSidebarOpen(false)}
+              aria-label="Close sidebar"
+              data-testid="button-close-sidebar"
+            >
+              <X className="w-5 h-5" />
+            </Button>
           </div>
         </div>
 
@@ -126,23 +166,35 @@ export default function Dashboard() {
       <main className="flex-1 overflow-auto">
         {/* Top Bar */}
         <div className="border-b bg-background sticky top-0 z-10">
-          <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-semibold">Dashboard</h1>
-              <p className="text-muted-foreground mt-1">
-                Overview of your feedback analytics
-              </p>
+          <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-6 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden"
+                onClick={() => setSidebarOpen(true)}
+                aria-label="Open sidebar"
+                data-testid="button-menu"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+              <div className="min-w-0">
+                <h1 className="text-2xl md:text-3xl font-semibold truncate">Dashboard</h1>
+                <p className="text-muted-foreground mt-1 hidden sm:block text-sm md:text-base">
+                  Overview of your feedback analytics
+                </p>
+              </div>
             </div>
             <Link href="/create-form">
-              <Button className="gap-2" data-testid="button-create-form">
+              <Button className="gap-2 flex-shrink-0" data-testid="button-create-form">
                 <Plus className="w-5 h-5" />
-                Create Form
+                <span className="hidden sm:inline">Create Form</span>
               </Button>
             </Link>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-8 py-8 space-y-8">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8">
           {/* Metrics Cards */}
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
