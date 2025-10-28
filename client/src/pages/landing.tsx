@@ -9,7 +9,7 @@ import {
   Zap, 
   Users 
 } from "lucide-react";
-import heroImage from "@assets/generated_images/Dashboard_mockup_for_hero_section_8f90f6ed.png";
+import { HeroCarousel } from "@/components/hero-carousel";
 import logoImage from "@assets/a-sophisticated-corporate-logo-design-fe_V_8XqCmZREesNjSau6f7ag_W4Px38qDSEC4uspEpAH3Kw-removebg-p_1761683074267.png";
 
 export default function Landing() {
@@ -83,15 +83,9 @@ export default function Landing() {
             </p>
           </div>
 
-          {/* Right Column - Hero Image */}
+          {/* Right Column - Hero Carousel */}
           <div className="hidden md:block">
-            <div className="relative">
-              <img 
-                src={heroImage} 
-                alt="BizIntel Dashboard Preview" 
-                className="rounded-2xl shadow-2xl border"
-              />
-            </div>
+            <HeroCarousel />
           </div>
         </div>
       </section>
