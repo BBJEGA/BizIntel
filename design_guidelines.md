@@ -1,4 +1,4 @@
-# BizIntel Feedback Platform - Design Guidelines
+# BizIntel Enterprise Feedback Platform - Design Guidelines
 
 ## Design Approach
 
@@ -6,230 +6,250 @@
 
 **Reference Products:** Linear (dashboard clarity), Notion (form interfaces), Stripe (professional trust)
 
-**Core Principle:** Create a professional, efficient B2B SaaS platform that prioritizes data clarity, form usability, and organizational trust. The design should feel modern and capable while maintaining simplicity for quick user onboarding.
+**Core Principle:** Create a professional, efficient B2B SaaS platform prioritizing data clarity, form usability, and organizational credibility. The design balances modern aesthetics with immediate usability for enterprise users.
+
+---
+
+## Color System
+
+**Primary Palette:**
+- Navy Blue: #1E3A8A (primary actions, navigation highlights, key headings)
+- Bright Green: #10B981 (success states, positive metrics, CTAs, accents)
+- White: #FFFFFF (main backgrounds, card surfaces)
+- Light Gray: #F3F4F6 (secondary surfaces, subtle backgrounds, borders)
+
+**Supporting Colors:**
+- Dark Gray: #374151 (body text, secondary elements)
+- Medium Gray: #6B7280 (supporting text, labels)
+- Pale Gray: #E5E7EB (dividers, borders)
+- Navy Tint: #3B82F6 (hover states, links)
+
+**Semantic Colors:**
+- Success: Bright Green (#10B981)
+- Warning: #F59E0B
+- Error: #EF4444
+- Info: Navy Blue (#1E3A8A)
+
+**Application Strategy:**
+- Navy blue sidebar with white text
+- White main content areas
+- Light gray (#F3F4F6) for card backgrounds on white surfaces
+- Bright green for primary CTAs, success metrics, positive trends
+- Navy blue for secondary buttons with border treatment
 
 ---
 
 ## Typography System
 
-**Font Families:**
-- Primary: Inter (via Google Fonts) - for UI elements, body text, and data
-- Headings: Inter with tighter letter-spacing for impact
+**Font Family:** Inter (Google Fonts - weights: 400, 500, 600, 700)
 
 **Type Scale:**
-- Hero Headlines: text-5xl md:text-6xl font-bold tracking-tight
-- Page Titles: text-3xl md:text-4xl font-semibold
-- Section Headers: text-2xl font-semibold
-- Card Titles: text-lg font-medium
-- Body Text: text-base leading-relaxed
-- Labels/Metadata: text-sm font-medium
-- Captions/Helper Text: text-xs
+- Hero Headlines: text-5xl md:text-6xl font-bold tracking-tight (navy blue)
+- Page Titles: text-3xl md:text-4xl font-semibold (navy blue)
+- Section Headers: text-2xl font-semibold (navy blue)
+- Card Titles: text-lg font-semibold (dark gray)
+- Body Text: text-base leading-relaxed (dark gray)
+- Labels: text-sm font-medium (medium gray)
+- Captions: text-xs (medium gray)
 
-**Emphasis:**
-- Use font-semibold for primary actions and important metrics
-- Use font-medium for secondary hierarchy
-- Maintain consistent line-height (leading-relaxed for readability)
+**Hierarchy Emphasis:**
+- Bold navy headings create strong information hierarchy
+- Medium gray labels provide subtle guidance
+- Consistent line-height (leading-relaxed) for readability in data-heavy interfaces
 
 ---
 
 ## Spacing System
 
-**Core Spacing Units (Tailwind):**
-- Micro spacing: 2, 4 (for tight element relationships)
-- Standard spacing: 6, 8, 12 (for component internal padding)
-- Section spacing: 16, 20, 24 (for vertical rhythm)
-- Large gaps: 32 (for major section separation)
+**Core Tailwind Units:** 2, 4, 6, 8, 12, 16, 20, 24, 32
+
+**Application:**
+- Micro: 2, 4 (tight element relationships, icon spacing)
+- Standard: 6, 8, 12 (component padding, form field gaps)
+- Section: 16, 20, 24 (vertical rhythm, card spacing)
+- Major: 32 (section separation, page margins)
 
 **Container Strategy:**
-- Max-width containers: max-w-7xl for main content
-- Form containers: max-w-2xl for optimal reading width
-- Dashboard cards: Use grid with gap-6
+- max-w-7xl for dashboard main content
+- max-w-2xl for forms and centered content
+- max-w-md for authentication pages
 
 ---
 
 ## Layout System
 
 ### Landing Page
+
 **Hero Section:**
-- Full viewport height (min-h-screen) with centered content
-- Two-column layout on desktop: Left (60%) - headline, description, CTA buttons; Right (40%) - hero illustration/mockup image
-- Stack to single column on mobile
-- Include trust indicators below CTA (e.g., "Trusted by 500+ organizations")
+- Full viewport (min-h-screen) two-column layout
+- Left (55%): Navy headline, dark gray description, CTA buttons (green primary + navy secondary), trust indicator ("Trusted by 500+ enterprises")
+- Right (45%): Large hero image showing dashboard interface mockup with subtle shadow and rounded-2xl corners
+- Background: White with subtle light gray accent element
+- Mobile: Stack single column, image below content
 
 **Features Section:**
-- Three-column grid (grid-cols-1 md:grid-cols-3) with gap-8
-- Each feature card: icon, title, description
-- Section padding: py-24
+- Three-column grid (grid-cols-1 md:grid-cols-3 gap-8)
+- Light gray background cards with white hover elevation
+- Each card: Green icon container (rounded-lg), navy title, dark gray description
+- Padding: py-24
 
 **How It Works:**
-- Numbered step cards in a horizontal flow
-- Use flex with gap-12 on desktop, stack on mobile
+- Four numbered step cards in horizontal flow with connecting lines
+- White cards on light gray section background
+- Navy step numbers in green circular containers
+- Desktop flex layout, mobile stack
+
+**Social Proof Section:**
+- Two-column layout: Left (testimonial quotes in white cards), Right (metrics grid showing usage statistics)
+- Navy company logos
+- py-20 section spacing
 
 **CTA Section:**
-- Centered with generous padding (py-32)
-- Large headline with primary and secondary action buttons
+- Centered on navy blue background with white text
+- Large headline, supporting text, dual CTAs (green primary, white outline secondary)
+- py-32 generous padding
 
 ### Dashboard Layout
-**Structure:**
-- Sidebar navigation (fixed, w-64) with logo, main nav links, user profile at bottom
-- Main content area with top bar showing page title and action buttons
-- Use flex layout: sidebar + flex-1 main content
+
+**Sidebar Navigation:**
+- Fixed left sidebar (w-64) with navy blue background
+- White logo and text
+- Navigation items: white text with green left border on active state
+- Rounded-lg hover states with lighter navy background
+- User profile section at bottom with avatar and name
+
+**Top Bar:**
+- White background with pale gray bottom border
+- Page title (navy, text-2xl font-semibold) left
+- Action buttons right (green primary button)
+- Height: h-16
+
+**Main Content:**
+- Light gray background (#F3F4F6)
+- White card containers with rounded-xl and shadow-sm
+- Grid layouts with gap-6
 
 **Analytics Cards:**
-- Grid layout (grid-cols-1 md:grid-cols-3) for metrics
-- Each card: large number (text-4xl font-bold), label, trend indicator
-- Simple bar chart below metrics using horizontal bars
+- Three-column grid for KPI metrics
+- White cards: Large navy number (text-4xl font-bold), medium gray label, green trend indicator with arrow
+- Bar chart section below: horizontal bars with green fill, labels in dark gray
 
 **Feedback Lists:**
-- Tab navigation for "All Complaints" and "All Suggestions"
-- Table layout with columns: Message preview, Category, Date, Anonymous badge
-- Pagination controls at bottom
+- White container with rounded-xl
+- Tab navigation with navy active state and green underline
+- Table with pale gray header, white rows
+- Hover state: light gray background
+- Badges: Green for "Suggestion", navy for "Complaint", medium gray for "Anonymous"
 
 ### Form Creation Page
-**Single-column layout:**
-- max-w-3xl centered container
-- Form fields with generous spacing (space-y-6)
-- Section groupings with visual separation
+
+**Layout:**
+- max-w-3xl centered on light gray background
+- White card container with rounded-xl
+- Section groupings with navy headings
+- Form fields: white backgrounds, pale gray borders, green focus rings
+- Space-y-6 for field spacing
+- Green primary button, navy secondary button at bottom
 
 ### Public Feedback Form
-**Centered card design:**
-- max-w-2xl container
-- Organization branding at top (name, form title)
-- Clean form fields with clear labels
-- Radio buttons for Complaint/Suggestion selection
-- Checkbox for anonymous submission
-- Prominent submit button
 
-### Authentication Pages (Login/Register)
-**Centered card approach:**
-- max-w-md container
-- Logo/brand at top
-- Form with space-y-6
-- Link to alternate action at bottom ("Don't have an account? Register")
+**Layout:**
+- max-w-2xl centered white card on light gray page background
+- Organization branding: Navy company name (text-2xl font-bold), medium gray form title
+- Clean form fields with navy labels
+- Radio buttons for type selection with green active state
+- Green checkbox for anonymous submission
+- Large green submit button (w-full)
+- Subtle shadow-lg on card
+
+### Authentication Pages
+
+**Layout:**
+- max-w-md centered white card
+- Navy logo/brand lockup at top
+- Form with space-y-6, green focus states
+- Green primary button
+- Navy link to alternate action ("Don't have an account? Register")
+- Light gray page background
 
 ---
 
 ## Component Library
 
-### Navigation
-**Top Navigation (Landing):**
-- Fixed to top with backdrop blur
-- Logo left, nav links center, CTA button right
-- Height: h-16 with px-6 horizontal padding
-
-**Sidebar Navigation (Dashboard):**
-- Fixed sidebar with py-6 px-4
-- Nav items with rounded corners (rounded-lg) and px-4 py-2 padding
-- Active state with medium font weight
-
 ### Buttons
-**Primary Button:**
-- px-6 py-3 rounded-lg font-medium
-- Larger for hero CTAs: px-8 py-4 text-lg
-
-**Secondary Button:**
-- Same sizing with border treatment
-- Use border-2 for prominence
-
-**Icon Buttons:**
-- p-2 rounded-lg for compact actions
+- **Primary:** Green background, white text, px-6 py-3 rounded-lg font-medium, hover: darker green
+- **Secondary:** Navy border-2, navy text, same sizing, hover: navy background with white text
+- **Hero CTA:** px-8 py-4 text-lg for landing page
+- **Buttons on Images:** Backdrop blur (backdrop-blur-md) with white/10 background
 
 ### Form Elements
-**Input Fields:**
-- w-full px-4 py-3 rounded-lg border-2
-- Focus state with ring treatment (ring-2 ring-offset-2)
-- Labels: text-sm font-medium mb-2
-
-**Textareas:**
-- Same styling as inputs
-- min-h-32 for feedback forms
-
-**Radio/Checkbox:**
-- Larger touch targets (w-5 h-5)
-- Align with text using flex items-center
+- **Inputs:** White background, pale gray border-2, px-4 py-3 rounded-lg, green focus ring-2
+- **Labels:** Navy text-sm font-medium mb-2
+- **Textareas:** min-h-32, same styling as inputs
+- **Radio/Checkbox:** Green when checked, w-5 h-5
 
 ### Cards
-**Dashboard Cards:**
-- Rounded corners (rounded-xl)
-- Padding: p-6
-- Border treatment with subtle shadow (shadow-sm)
+- **Dashboard:** White background, rounded-xl, p-6, shadow-sm, hover: shadow-md
+- **Feature:** Light gray background, rounded-xl, p-8, white hover
+- **Metrics:** Large navy number, green trend arrows
 
-**Feature Cards (Landing):**
-- rounded-xl with p-8
-- Icon container at top (w-12 h-12 rounded-lg flex items-center justify-center)
-
-**Feedback Cards:**
-- rounded-lg with p-4
-- Compact design with hover elevation
-
-### Data Display
-**Metrics Cards:**
-- Large number display with supporting label below
-- Optional trend indicator (arrow icon + percentage)
-
-**Charts:**
-- Simple horizontal bar charts using div elements with widths
-- Height: h-8 per bar with gap-3
-- Labels on left, bars on right
-
-**Tables:**
-- Full width with rounded-lg container
-- Header row with font-medium
-- Body rows with hover state
-- Cell padding: px-4 py-3
+### Navigation
+- **Sidebar:** Navy background, white text, green active indicator (left border-l-4)
+- **Tabs:** Navy active with green bottom border-b-2
 
 ### Badges
-**Status Badges:**
-- Inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
-- Use for "Complaint", "Suggestion", "Anonymous" labels
+- Inline-flex px-3 py-1 rounded-full text-xs font-medium
+- Complaint: Navy background, white text
+- Suggestion: Green background, white text
+- Anonymous: Medium gray background, white text
 
-### Modals/Overlays
-**Modal Structure:**
-- Fixed overlay with backdrop blur
-- Centered card (max-w-lg) with rounded-xl and p-6
-- Close button in top-right corner
+### Data Visualizations
+- **Bar Charts:** Green filled bars (varying opacity for depth), height h-8, gap-3
+- **Trend Indicators:** Green up arrows, red down arrows, with percentages
 
 ---
 
 ## Icons
-**Library:** Heroicons (via CDN)
-**Usage:**
-- Navigation: 20px icons (w-5 h-5)
-- Feature cards: 24px icons (w-6 h-6)
-- Buttons with icons: 20px inline (w-5 h-5)
-- Status indicators: 16px (w-4 h-4)
+
+**Library:** Heroicons (CDN)
+**Sizes:** w-5 h-5 (navigation, buttons), w-6 h-6 (features), w-4 h-4 (inline status)
+**Colors:** Match parent context - green in features, white in sidebar, navy in content
 
 ---
 
 ## Images
 
-**Hero Section (Landing Page):**
-- Large hero image showing a dashboard mockup or professional team collaborating
-- Position: Right side of two-column hero layout
-- Style: Subtle shadow and rounded corners (rounded-2xl)
-- Aspect ratio: 16:9 or 4:3
+**Hero Section (Landing):**
+- Large dashboard mockup image showing BizIntel interface with analytics and feedback management
+- Positioned right side of hero two-column layout
+- Style: Subtle shadow-2xl, rounded-2xl corners
+- Shows: Navy sidebar, analytics cards, feedback table - professional screenshot aesthetic
 
-**Feature Section Icons:**
-- Use illustrative icons from Heroicons, no custom images needed
+**Feature Icons:**
+- Use Heroicons within green circular containers - no custom images needed
 
 **Dashboard:**
-- Organization logo placeholder in sidebar (square, 40x40px)
-- No other images required - focus on data clarity
+- Organization logo placeholder (40x40px square) in sidebar top
+- User avatar (32x32px circular) in sidebar bottom
 
 ---
 
 ## Animations
-**Minimal, purposeful animations:**
-- Smooth transitions on hover states (transition-all duration-200)
-- Fade-in for modal overlays
-- No scroll animations or complex effects
-- Button hover: slight scale (hover:scale-105) on CTA buttons only
+
+**Minimal Approach:**
+- Hover transitions: transition-all duration-200
+- Button hover: slight shadow increase on cards
+- Green CTA buttons: hover:scale-105 transform
+- Modal overlays: fade-in with backdrop-blur
+- No scroll animations or parallax effects
 
 ---
 
 ## Accessibility
-- All form inputs include proper labels and aria-labels
-- Minimum touch target size: 44x44px for buttons
-- Focus states visible with ring treatment
-- Semantic HTML throughout (nav, main, article, section)
-- Color contrast meets WCAG AA standards (handled separately from these guidelines)
+
+- Minimum 44x44px touch targets
+- Green/Navy color contrast meets WCAG AA (4.5:1 minimum)
+- Focus rings (green ring-2) visible on all interactive elements
+- Semantic HTML structure (nav, main, section, article)
+- All form inputs include proper labels with for attributes
+- Skip navigation link for keyboard users

@@ -19,7 +19,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BarChart3 className="w-6 h-6 text-primary" />
-            <span className="text-lg font-semibold">BizIntel</span>
+            <span className="text-lg font-semibold">BizIntel Enterprise</span>
           </div>
           
           <div className="flex items-center gap-4">
@@ -29,7 +29,7 @@ export default function Landing() {
               </Button>
             </Link>
             <Link href="/register">
-              <Button data-testid="button-get-started">
+              <Button variant="default" data-testid="button-get-started">
                 Get Started
               </Button>
             </Link>
@@ -44,14 +44,11 @@ export default function Landing() {
           <div className="space-y-8">
             <div className="space-y-6">
               <h1 className="text-5xl md:text-6xl font-bold tracking-tight leading-tight">
-                Collect Feedback.
-                <br />
-                <span className="text-primary">Drive Growth.</span>
+                Empowering Businesses Through{" "}
+                <span className="text-primary">Intelligent Feedback</span>
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl">
-                BizIntel helps organizations create custom feedback forms, 
-                collect valuable insights, and analyze complaints and suggestions 
-                in real-time with powerful analytics.
+                Collect, analyze, and act on insights from your customers and employees.
               </p>
             </div>
 
@@ -62,19 +59,18 @@ export default function Landing() {
                   className="px-8 py-6 text-lg hover:scale-105 transition-transform"
                   data-testid="button-hero-get-started"
                 >
-                  Get Started Free
+                  Get Started
                 </Button>
               </Link>
-              <Link href="/login">
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="px-8 py-6 text-lg"
-                  data-testid="button-hero-login"
-                >
-                  View Demo
-                </Button>
-              </Link>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="px-8 py-6 text-lg"
+                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                data-testid="button-hero-learn-more"
+              >
+                Learn More
+              </Button>
             </div>
 
             <p className="text-sm text-muted-foreground">
@@ -96,7 +92,7 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 px-6 bg-muted/30">
+      <section id="features" className="py-24 px-6 bg-muted/30">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-3xl md:text-4xl font-semibold">
@@ -110,10 +106,10 @@ export default function Landing() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Feature 1 */}
             <Card className="p-8 space-y-4 hover-elevate transition-all duration-200">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                <MessageSquare className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
+                <MessageSquare className="w-6 h-6 text-accent" />
               </div>
-              <h3 className="text-lg font-medium">Custom Feedback Forms</h3>
+              <h3 className="text-xl font-semibold">Collect Feedback Easily</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Create tailored feedback forms in minutes. Share them with customers, 
                 employees, or stakeholders via simple shareable links.
@@ -122,10 +118,10 @@ export default function Landing() {
 
             {/* Feature 2 */}
             <Card className="p-8 space-y-4 hover-elevate transition-all duration-200">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
+                <BarChart3 className="w-6 h-6 text-accent" />
               </div>
-              <h3 className="text-lg font-medium">Real-Time Analytics</h3>
+              <h3 className="text-xl font-semibold">Get Actionable Insights</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Visualize feedback trends instantly. Track complaints vs suggestions 
                 with intuitive charts and comprehensive dashboards.
@@ -134,13 +130,13 @@ export default function Landing() {
 
             {/* Feature 3 */}
             <Card className="p-8 space-y-4 hover-elevate transition-all duration-200">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Shield className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
+                <Zap className="w-6 h-6 text-accent" />
               </div>
-              <h3 className="text-lg font-medium">Anonymous Submissions</h3>
+              <h3 className="text-xl font-semibold">Make Smarter Decisions</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Enable anonymous feedback to encourage honest responses. 
-                Build trust and collect genuine insights from your audience.
+                Use data-driven insights to make informed business decisions. 
+                Identify trends, prioritize improvements, and take action quickly.
               </p>
             </Card>
           </div>
@@ -223,7 +219,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="py-12 px-6 border-t">
         <div className="max-w-7xl mx-auto text-center text-muted-foreground">
-          <p>&copy; 2025 BizIntel Feedback Platform. All rights reserved.</p>
+          <p>&copy; 2025 BizIntel Enterprise – All rights reserved.</p>
         </div>
       </footer>
     </div>

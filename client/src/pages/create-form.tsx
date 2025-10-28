@@ -137,11 +137,11 @@ export default function CreateForm() {
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar */}
-      <aside className="w-64 border-r bg-sidebar flex flex-col">
-        <div className="p-6 border-b">
+      <aside className="w-64 border-r bg-sidebar text-sidebar-foreground flex flex-col">
+        <div className="p-6 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
-            <BarChart3 className="w-6 h-6 text-primary" />
-            <span className="text-lg font-semibold">BizIntel</span>
+            <BarChart3 className="w-6 h-6 text-sidebar-primary" />
+            <span className="text-lg font-semibold">BizIntel Enterprise</span>
           </div>
         </div>
 
@@ -149,7 +149,7 @@ export default function CreateForm() {
           <Link href="/dashboard">
             <Button 
               variant="ghost" 
-              className="w-full justify-start gap-3"
+              className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               data-testid="nav-dashboard"
             >
               <Home className="w-5 h-5" />
@@ -158,7 +158,7 @@ export default function CreateForm() {
           </Link>
           <Button 
             variant="ghost" 
-            className="w-full justify-start gap-3 bg-sidebar-accent"
+            className="w-full justify-start gap-3 bg-sidebar-accent text-sidebar-accent-foreground"
             data-testid="nav-create-form"
           >
             <FileText className="w-5 h-5" />
@@ -166,14 +166,16 @@ export default function CreateForm() {
           </Button>
         </nav>
 
-        <div className="p-4 border-t">
-          <div className="mb-3 px-3 py-2">
-            <p className="text-xs font-medium text-muted-foreground">Organization</p>
-            <p className="text-sm font-medium truncate">{organization?.name}</p>
+        <div className="p-4 border-t border-sidebar-border">
+          <div className="mb-3 px-3 py-2 rounded-lg bg-sidebar-accent/50">
+            <p className="text-xs font-medium text-sidebar-foreground/70">Organization</p>
+            <p className="text-sm font-semibold truncate text-sidebar-foreground" data-testid="text-org-name">
+              {organization?.name || 'Loading...'}
+            </p>
           </div>
           <Button 
             variant="ghost" 
-            className="w-full justify-start gap-3 text-muted-foreground"
+            className="w-full justify-start gap-3 text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-sidebar-accent"
             onClick={handleLogout}
             data-testid="button-logout"
           >
