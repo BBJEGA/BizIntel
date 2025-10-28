@@ -42,23 +42,27 @@ export default function CreateForm() {
   }, [user, authLoading, setLocation]);
 
   // Fetch forms
+  const orgId = organization?.id || user?.uid;
   const { data: forms = [], isLoading } = useQuery({
-    queryKey: ["/api/forms", organization?.id],
+    queryKey: ["/api/forms", orgId],
     queryFn: async () => {
-      if (!organization?.id) return [];
-      return await getFormsByOrgId(organization.id);
+      if (!orgId) return [];
+      return await getFormsByOrgId(orgId);
     },
-    enabled: !!organization?.id,
+    enabled: !!orgId,
   });
 
   // Create form mutation
   const createFormMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      if (!organization?.id) throw new Error("Not authenticated");
-      return await createForm(organization.id, data);
+      // Use user.uid if organization is not loaded yet
+      const orgId = organization?.id || user?.uid;
+      if (!orgId) throw new Error("Not authenticated");
+      return await createForm(orgId, data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/forms", organization?.id] });
+      const orgId = organization?.id || user?.uid;
+      queryClient.invalidateQueries({ queryKey: ["/api/forms", orgId] });
       toast({
         title: "Form created!",
         description: "Your feedback form has been created successfully.",

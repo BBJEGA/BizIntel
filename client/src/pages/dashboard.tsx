@@ -34,13 +34,14 @@ export default function Dashboard() {
   }, [user, authLoading, setLocation]);
 
   // Fetch feedback data
+  const orgId = organization?.id || user?.uid;
   const { data: feedback = [], isLoading } = useQuery({
-    queryKey: ["/api/feedback", organization?.id],
+    queryKey: ["/api/feedback", orgId],
     queryFn: async () => {
-      if (!organization?.id) return [];
-      return await getFeedbackByOrgId(organization.id);
+      if (!orgId) return [];
+      return await getFeedbackByOrgId(orgId);
     },
-    enabled: !!organization?.id,
+    enabled: !!orgId,
   });
 
   const handleLogout = async () => {
