@@ -84,7 +84,7 @@ export default function Landing() {
           </div>
 
           {/* Right Column - Hero Carousel */}
-          <div className="hidden md:block">
+          <div className="w-full">
             <HeroCarousel />
           </div>
         </div>

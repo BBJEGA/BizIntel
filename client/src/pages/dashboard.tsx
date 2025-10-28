@@ -154,7 +154,7 @@ export default function Dashboard() {
           <div className="mb-3 px-3 py-2 rounded-lg bg-sidebar-accent/50">
             <p className="text-xs font-medium text-sidebar-foreground/70">Organization</p>
             <p className="text-sm font-semibold truncate text-sidebar-foreground" data-testid="text-org-name">
-              {organization?.name || 'Loading...'}
+              {organization?.name || user?.email?.split('@')[0] || 'Organization'}
             </p>
           </div>
           <Button 
