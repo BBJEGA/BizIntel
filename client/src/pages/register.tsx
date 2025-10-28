@@ -151,10 +151,8 @@ export default function Register() {
         {/* Link to Login */}
         <div className="text-center text-sm">
           <span className="text-muted-foreground">Already have an account? </span>
-          <Link href="/login">
-            <a className="text-primary font-medium hover:underline" data-testid="link-login">
-              Log in
-            </a>
+          <Link href="/login" className="text-primary font-medium hover:underline" data-testid="link-login">
+            Log in
           </Link>
         </div>
       </Card>
