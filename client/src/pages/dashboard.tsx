@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { Link } from "wouter";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   BarChart3, 
   MessageSquare, 
@@ -15,30 +17,39 @@ import {
   FileText,
   Home
 } from "lucide-react";
-
-// Mock data for initial display
-const mockFeedback = [
-  {
-    id: "1",
-    message: "The new dashboard is confusing and hard to navigate...",
-    category: "Complaint" as const,
-    anonymous: false,
-    createdAt: Date.now() - 86400000,
-  },
-  {
-    id: "2",
-    message: "Would love to see dark mode support in the application",
-    category: "Suggestion" as const,
-    anonymous: true,
-    createdAt: Date.now() - 172800000,
-  },
-];
+import { useAuth } from "@/lib/auth-context";
+import { getFeedbackByOrgId } from "@/lib/firebase-services";
+import type { Feedback } from "@shared/schema";
 
 export default function Dashboard() {
+  const [, setLocation] = useLocation();
+  const { user, organization, logout, loading: authLoading } = useAuth();
   const [selectedTab, setSelectedTab] = useState("all");
 
-  const complaints = mockFeedback.filter(f => f.category === "Complaint");
-  const suggestions = mockFeedback.filter(f => f.category === "Suggestion");
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!authLoading && !user) {
+      setLocation("/login");
+    }
+  }, [user, authLoading, setLocation]);
+
+  // Fetch feedback data
+  const { data: feedback = [], isLoading } = useQuery({
+    queryKey: ["/api/feedback", organization?.id],
+    queryFn: async () => {
+      if (!organization?.id) return [];
+      return await getFeedbackByOrgId(organization.id);
+    },
+    enabled: !!organization?.id,
+  });
+
+  const handleLogout = async () => {
+    await logout();
+    setLocation("/login");
+  };
+
+  const complaints = feedback.filter((f: Feedback) => f.category === "Complaint");
+  const suggestions = feedback.filter((f: Feedback) => f.category === "Suggestion");
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString("en-US", {
@@ -47,6 +58,17 @@ export default function Dashboard() {
       year: "numeric",
     });
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="space-y-4 text-center">
+          <Skeleton className="h-12 w-12 rounded-full mx-auto" />
+          <Skeleton className="h-4 w-32 mx-auto" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-background">
@@ -81,9 +103,14 @@ export default function Dashboard() {
         </nav>
 
         <div className="p-4 border-t">
+          <div className="mb-3 px-3 py-2">
+            <p className="text-xs font-medium text-muted-foreground">Organization</p>
+            <p className="text-sm font-medium truncate">{organization?.name}</p>
+          </div>
           <Button 
             variant="ghost" 
             className="w-full justify-start gap-3 text-muted-foreground"
+            onClick={handleLogout}
             data-testid="button-logout"
           >
             <LogOut className="w-5 h-5" />
@@ -114,107 +141,124 @@ export default function Dashboard() {
 
         <div className="max-w-7xl mx-auto px-8 py-8 space-y-8">
           {/* Metrics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Total Feedback */}
-            <Card className="p-6 space-y-2">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Total Feedback
-                </p>
-                <MessageSquare className="w-4 h-4 text-muted-foreground" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-4xl font-bold" data-testid="metric-total">
-                  {mockFeedback.length}
-                </p>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3 text-chart-4" />
-                  <span className="text-chart-4">+12% from last week</span>
-                </p>
-              </div>
-            </Card>
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[1, 2, 3].map((i) => (
+                <Card key={i} className="p-6 space-y-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-10 w-16" />
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Total Feedback */}
+              <Card className="p-6 space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Total Feedback
+                  </p>
+                  <MessageSquare className="w-4 h-4 text-muted-foreground" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-4xl font-bold" data-testid="metric-total">
+                    {feedback.length}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    All responses received
+                  </p>
+                </div>
+              </Card>
 
-            {/* Complaints */}
-            <Card className="p-6 space-y-2">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Complaints
-                </p>
-                <AlertCircle className="w-4 h-4 text-muted-foreground" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-4xl font-bold text-destructive" data-testid="metric-complaints">
-                  {complaints.length}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {complaints.length > 0 
-                    ? `${Math.round((complaints.length / mockFeedback.length) * 100)}% of total` 
-                    : "No complaints yet"}
-                </p>
-              </div>
-            </Card>
+              {/* Complaints */}
+              <Card className="p-6 space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Complaints
+                  </p>
+                  <AlertCircle className="w-4 h-4 text-muted-foreground" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-4xl font-bold text-destructive" data-testid="metric-complaints">
+                    {complaints.length}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {feedback.length > 0 
+                      ? `${Math.round((complaints.length / feedback.length) * 100)}% of total` 
+                      : "No complaints yet"}
+                  </p>
+                </div>
+              </Card>
 
-            {/* Suggestions */}
-            <Card className="p-6 space-y-2">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Suggestions
-                </p>
-                <TrendingUp className="w-4 h-4 text-muted-foreground" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-4xl font-bold text-chart-1" data-testid="metric-suggestions">
-                  {suggestions.length}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {suggestions.length > 0 
-                    ? `${Math.round((suggestions.length / mockFeedback.length) * 100)}% of total` 
-                    : "No suggestions yet"}
-                </p>
-              </div>
-            </Card>
-          </div>
+              {/* Suggestions */}
+              <Card className="p-6 space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Suggestions
+                  </p>
+                  <TrendingUp className="w-4 h-4 text-muted-foreground" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-4xl font-bold text-chart-1" data-testid="metric-suggestions">
+                    {suggestions.length}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {feedback.length > 0 
+                      ? `${Math.round((suggestions.length / feedback.length) * 100)}% of total` 
+                      : "No suggestions yet"}
+                  </p>
+                </div>
+              </Card>
+            </div>
+          )}
 
           {/* Simple Bar Chart */}
           <Card className="p-6">
             <h2 className="text-lg font-medium mb-6">Feedback Distribution</h2>
-            <div className="space-y-4">
-              {/* Complaints Bar */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium">Complaints</span>
-                  <span className="text-muted-foreground">{complaints.length}</span>
-                </div>
-                <div className="h-8 bg-muted rounded-lg overflow-hidden">
-                  <div 
-                    className="h-full bg-destructive rounded-lg transition-all duration-500"
-                    style={{ 
-                      width: mockFeedback.length > 0 
-                        ? `${(complaints.length / mockFeedback.length) * 100}%` 
-                        : '0%' 
-                    }}
-                  />
-                </div>
+            {isLoading ? (
+              <div className="space-y-4">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
               </div>
+            ) : (
+              <div className="space-y-4">
+                {/* Complaints Bar */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium">Complaints</span>
+                    <span className="text-muted-foreground">{complaints.length}</span>
+                  </div>
+                  <div className="h-8 bg-muted rounded-lg overflow-hidden">
+                    <div 
+                      className="h-full bg-destructive rounded-lg transition-all duration-500"
+                      style={{ 
+                        width: feedback.length > 0 
+                          ? `${(complaints.length / feedback.length) * 100}%` 
+                          : '0%' 
+                      }}
+                    />
+                  </div>
+                </div>
 
-              {/* Suggestions Bar */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium">Suggestions</span>
-                  <span className="text-muted-foreground">{suggestions.length}</span>
-                </div>
-                <div className="h-8 bg-muted rounded-lg overflow-hidden">
-                  <div 
-                    className="h-full bg-chart-1 rounded-lg transition-all duration-500"
-                    style={{ 
-                      width: mockFeedback.length > 0 
-                        ? `${(suggestions.length / mockFeedback.length) * 100}%` 
-                        : '0%' 
-                    }}
-                  />
+                {/* Suggestions Bar */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium">Suggestions</span>
+                    <span className="text-muted-foreground">{suggestions.length}</span>
+                  </div>
+                  <div className="h-8 bg-muted rounded-lg overflow-hidden">
+                    <div 
+                      className="h-full bg-chart-1 rounded-lg transition-all duration-500"
+                      style={{ 
+                        width: feedback.length > 0 
+                          ? `${(suggestions.length / feedback.length) * 100}%` 
+                          : '0%' 
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </Card>
 
           {/* Feedback Lists with Tabs */}
@@ -224,7 +268,7 @@ export default function Dashboard() {
                 <h2 className="text-lg font-medium">Recent Feedback</h2>
                 <TabsList>
                   <TabsTrigger value="all" data-testid="tab-all">
-                    All ({mockFeedback.length})
+                    All ({feedback.length})
                   </TabsTrigger>
                   <TabsTrigger value="complaints" data-testid="tab-complaints">
                     Complaints ({complaints.length})
@@ -236,37 +280,44 @@ export default function Dashboard() {
               </div>
 
               <TabsContent value="all" className="space-y-4">
-                {mockFeedback.length === 0 ? (
+                {isLoading ? (
+                  <div className="space-y-3">
+                    {[1, 2, 3].map((i) => (
+                      <Skeleton key={i} className="h-24 w-full" />
+                    ))}
+                  </div>
+                ) : feedback.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground">
                     <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>No feedback received yet</p>
+                    <p className="text-sm mt-2">Create a form and share it to start collecting feedback</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {mockFeedback.map((feedback) => (
+                    {feedback.map((item: Feedback) => (
                       <div 
-                        key={feedback.id}
+                        key={item.id}
                         className="p-4 border rounded-lg hover-elevate transition-all"
-                        data-testid={`feedback-${feedback.id}`}
+                        data-testid={`feedback-${item.id}`}
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1 space-y-2">
-                            <p className="leading-relaxed">{feedback.message}</p>
+                            <p className="leading-relaxed">{item.message}</p>
                             <div className="flex items-center gap-3">
                               <Badge 
-                                variant={feedback.category === "Complaint" ? "destructive" : "default"}
-                                data-testid={`badge-category-${feedback.id}`}
+                                variant={item.category === "Complaint" ? "destructive" : "default"}
+                                data-testid={`badge-category-${item.id}`}
                               >
-                                {feedback.category}
+                                {item.category}
                               </Badge>
-                              {feedback.anonymous && (
-                                <Badge variant="outline" data-testid={`badge-anonymous-${feedback.id}`}>
+                              {item.anonymous && (
+                                <Badge variant="outline" data-testid={`badge-anonymous-${item.id}`}>
                                   Anonymous
                                 </Badge>
                               )}
                               <span className="text-xs text-muted-foreground flex items-center gap-1">
                                 <Calendar className="w-3 h-3" />
-                                {formatDate(feedback.createdAt)}
+                                {formatDate(item.createdAt)}
                               </span>
                             </div>
                           </div>
@@ -285,24 +336,24 @@ export default function Dashboard() {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {complaints.map((feedback) => (
+                    {complaints.map((item: Feedback) => (
                       <div 
-                        key={feedback.id}
+                        key={item.id}
                         className="p-4 border rounded-lg hover-elevate transition-all"
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1 space-y-2">
-                            <p className="leading-relaxed">{feedback.message}</p>
+                            <p className="leading-relaxed">{item.message}</p>
                             <div className="flex items-center gap-3">
                               <Badge variant="destructive">
-                                {feedback.category}
+                                {item.category}
                               </Badge>
-                              {feedback.anonymous && (
+                              {item.anonymous && (
                                 <Badge variant="outline">Anonymous</Badge>
                               )}
                               <span className="text-xs text-muted-foreground flex items-center gap-1">
                                 <Calendar className="w-3 h-3" />
-                                {formatDate(feedback.createdAt)}
+                                {formatDate(item.createdAt)}
                               </span>
                             </div>
                           </div>
@@ -321,24 +372,24 @@ export default function Dashboard() {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {suggestions.map((feedback) => (
+                    {suggestions.map((item: Feedback) => (
                       <div 
-                        key={feedback.id}
+                        key={item.id}
                         className="p-4 border rounded-lg hover-elevate transition-all"
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1 space-y-2">
-                            <p className="leading-relaxed">{feedback.message}</p>
+                            <p className="leading-relaxed">{item.message}</p>
                             <div className="flex items-center gap-3">
                               <Badge variant="default">
-                                {feedback.category}
+                                {item.category}
                               </Badge>
-                              {feedback.anonymous && (
+                              {item.anonymous && (
                                 <Badge variant="outline">Anonymous</Badge>
                               )}
                               <span className="text-xs text-muted-foreground flex items-center gap-1">
                                 <Calendar className="w-3 h-3" />
-                                {formatDate(feedback.createdAt)}
+                                {formatDate(item.createdAt)}
                               </span>
                             </div>
                           </div>

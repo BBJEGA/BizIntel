@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -7,10 +7,12 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart3 } from "lucide-react";
 import { insertOrganizationSchema } from "@shared/schema";
+import { useAuth } from "@/lib/auth-context";
 
 export default function Register() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { register, user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -18,6 +20,13 @@ export default function Register() {
     password: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      setLocation("/dashboard");
+    }
+  }, [user, setLocation]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,13 +47,21 @@ export default function Register() {
 
     setLoading(true);
     
-    // This will be connected to Firebase in Phase 2
-    toast({
-      title: "Registration pending",
-      description: "Firebase integration coming in next phase",
-    });
-    
-    setLoading(false);
+    try {
+      await register(formData.name, formData.email, formData.password);
+      toast({
+        title: "Welcome to BizIntel!",
+        description: "Your account has been created successfully.",
+      });
+      setLocation("/dashboard");
+    } catch (error: any) {
+      toast({
+        title: "Registration failed",
+        description: error.message || "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+      setLoading(false);
+    }
   };
 
   return (

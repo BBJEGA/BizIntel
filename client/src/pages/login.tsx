@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -7,16 +7,25 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart3 } from "lucide-react";
 import { loginSchema } from "@shared/schema";
+import { useAuth } from "@/lib/auth-context";
 
 export default function Login() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { login, user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      setLocation("/dashboard");
+    }
+  }, [user, setLocation]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,13 +46,21 @@ export default function Login() {
 
     setLoading(true);
     
-    // This will be connected to Firebase in Phase 2
-    toast({
-      title: "Login pending",
-      description: "Firebase integration coming in next phase",
-    });
-    
-    setLoading(false);
+    try {
+      await login(formData.email, formData.password);
+      toast({
+        title: "Welcome back!",
+        description: "You have been logged in successfully.",
+      });
+      setLocation("/dashboard");
+    } catch (error: any) {
+      toast({
+        title: "Login failed",
+        description: error.message || "Invalid email or password.",
+        variant: "destructive",
+      });
+      setLoading(false);
+    }
   };
 
   return (

@@ -32,17 +32,21 @@ export async function createForm(orgId: string, formData: InsertForm): Promise<F
 }
 
 export async function getFormsByOrgId(orgId: string): Promise<Form[]> {
+  // Note: Removed orderBy to avoid composite index requirement
+  // Sorting is done client-side instead
   const q = query(
     collection(db, "forms"), 
-    where("orgId", "==", orgId),
-    orderBy("createdAt", "desc")
+    where("orgId", "==", orgId)
   );
   
   const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(doc => ({
+  const forms = querySnapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
   } as Form));
+  
+  // Sort by createdAt descending (newest first) on client side
+  return forms.sort((a, b) => b.createdAt - a.createdAt);
 }
 
 export async function getFormById(formId: string): Promise<Form | null> {
@@ -87,31 +91,39 @@ export async function createFeedback(
 }
 
 export async function getFeedbackByOrgId(orgId: string): Promise<Feedback[]> {
+  // Note: Removed orderBy to avoid composite index requirement
+  // Sorting is done client-side instead
   const q = query(
     collection(db, "feedback"), 
-    where("orgId", "==", orgId),
-    orderBy("createdAt", "desc")
+    where("orgId", "==", orgId)
   );
   
   const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(doc => ({
+  const feedback = querySnapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
   } as Feedback));
+  
+  // Sort by createdAt descending (newest first) on client side
+  return feedback.sort((a, b) => b.createdAt - a.createdAt);
 }
 
 export async function getFeedbackByFormId(formId: string): Promise<Feedback[]> {
+  // Note: Removed orderBy to avoid composite index requirement
+  // Sorting is done client-side instead
   const q = query(
     collection(db, "feedback"), 
-    where("formId", "==", formId),
-    orderBy("createdAt", "desc")
+    where("formId", "==", formId)
   );
   
   const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(doc => ({
+  const feedback = querySnapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
   } as Feedback));
+  
+  // Sort by createdAt descending (newest first) on client side
+  return feedback.sort((a, b) => b.createdAt - a.createdAt);
 }
 
 export async function getFeedbackStats(orgId: string): Promise<{

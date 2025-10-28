@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { 
   BarChart3, 
@@ -15,22 +17,15 @@ import {
   LogOut,
   Home
 } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import { createForm, getFormsByOrgId } from "@/lib/firebase-services";
 import { insertFormSchema } from "@shared/schema";
-
-// Mock forms data
-const mockForms = [
-  {
-    id: "form1",
-    title: "Customer Feedback Survey",
-    description: "Help us improve our products and services",
-    createdAt: Date.now() - 86400000,
-  },
-];
+import { queryClient } from "@/lib/queryClient";
 
 export default function CreateForm() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const { user, organization, logout, loading: authLoading } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -38,6 +33,47 @@ export default function CreateForm() {
     description: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!authLoading && !user) {
+      setLocation("/login");
+    }
+  }, [user, authLoading, setLocation]);
+
+  // Fetch forms
+  const { data: forms = [], isLoading } = useQuery({
+    queryKey: ["/api/forms", organization?.id],
+    queryFn: async () => {
+      if (!organization?.id) return [];
+      return await getFormsByOrgId(organization.id);
+    },
+    enabled: !!organization?.id,
+  });
+
+  // Create form mutation
+  const createFormMutation = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      if (!organization?.id) throw new Error("Not authenticated");
+      return await createForm(organization.id, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/forms", organization?.id] });
+      toast({
+        title: "Form created!",
+        description: "Your feedback form has been created successfully.",
+      });
+      setFormData({ title: "", description: "" });
+      setShowForm(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to create form",
+        description: error.message || "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,15 +92,12 @@ export default function CreateForm() {
       return;
     }
 
-    setLoading(true);
-    
-    // This will be connected to Firebase in Phase 2
-    toast({
-      title: "Form creation pending",
-      description: "Firebase integration coming in next phase",
-    });
-    
-    setLoading(false);
+    createFormMutation.mutate(formData);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setLocation("/login");
   };
 
   const copyShareableLink = (formId: string) => {
@@ -85,6 +118,17 @@ export default function CreateForm() {
       year: "numeric",
     });
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="space-y-4 text-center">
+          <Skeleton className="h-12 w-12 rounded-full mx-auto" />
+          <Skeleton className="h-4 w-32 mx-auto" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-background">
@@ -119,9 +163,14 @@ export default function CreateForm() {
         </nav>
 
         <div className="p-4 border-t">
+          <div className="mb-3 px-3 py-2">
+            <p className="text-xs font-medium text-muted-foreground">Organization</p>
+            <p className="text-sm font-medium truncate">{organization?.name}</p>
+          </div>
           <Button 
             variant="ghost" 
             className="w-full justify-start gap-3 text-muted-foreground"
+            onClick={handleLogout}
             data-testid="button-logout"
           >
             <LogOut className="w-5 h-5" />
@@ -162,7 +211,11 @@ export default function CreateForm() {
                 <Button
                   variant="ghost"
                   className="gap-2 -ml-2"
-                  onClick={() => setShowForm(false)}
+                  onClick={() => {
+                    setShowForm(false);
+                    setFormData({ title: "", description: "" });
+                    setErrors({});
+                  }}
                   data-testid="button-back"
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -219,15 +272,19 @@ export default function CreateForm() {
                   <div className="flex gap-3">
                     <Button
                       type="submit"
-                      disabled={loading}
+                      disabled={createFormMutation.isPending}
                       data-testid="button-create-form-submit"
                     >
-                      {loading ? "Creating..." : "Create Form"}
+                      {createFormMutation.isPending ? "Creating..." : "Create Form"}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => setShowForm(false)}
+                      onClick={() => {
+                        setShowForm(false);
+                        setFormData({ title: "", description: "" });
+                        setErrors({});
+                      }}
                       data-testid="button-cancel"
                     >
                       Cancel
@@ -239,7 +296,17 @@ export default function CreateForm() {
           ) : (
             /* Forms List View */
             <div className="space-y-6">
-              {mockForms.length === 0 ? (
+              {isLoading ? (
+                <div className="space-y-6">
+                  {[1, 2].map((i) => (
+                    <Card key={i} className="p-6">
+                      <Skeleton className="h-6 w-64 mb-2" />
+                      <Skeleton className="h-4 w-full mb-4" />
+                      <Skeleton className="h-10 w-32" />
+                    </Card>
+                  ))}
+                </div>
+              ) : forms.length === 0 ? (
                 <Card className="p-12 text-center">
                   <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
                   <h3 className="text-lg font-medium mb-2">No forms yet</h3>
@@ -254,7 +321,7 @@ export default function CreateForm() {
                   </Button>
                 </Card>
               ) : (
-                mockForms.map((form) => (
+                forms.map((form) => (
                   <Card key={form.id} className="p-6 hover-elevate transition-all">
                     <div className="space-y-4">
                       <div>

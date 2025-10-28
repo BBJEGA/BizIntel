@@ -1,27 +1,22 @@
 import { useState } from "react";
 import { useRoute } from "wouter";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart3, CheckCircle2, MessageSquare, AlertCircle } from "lucide-react";
 import { insertFeedbackSchema, type FeedbackCategory } from "@shared/schema";
-
-// Mock form data
-const mockForm = {
-  id: "form1",
-  title: "Customer Feedback Survey",
-  description: "Help us improve our products and services",
-  orgName: "Acme Corporation",
-};
+import { getFormById, createFeedback } from "@/lib/firebase-services";
 
 export default function PublicFeedback() {
   const [, params] = useRoute("/form/:formId");
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const formId = params?.formId || "";
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     message: "",
@@ -29,6 +24,38 @@ export default function PublicFeedback() {
     anonymous: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Fetch form details
+  const { data: form, isLoading: formLoading } = useQuery({
+    queryKey: ["/api/forms", formId],
+    queryFn: async () => {
+      if (!formId) return null;
+      return await getFormById(formId);
+    },
+    enabled: !!formId,
+  });
+
+  // Submit feedback mutation
+  const submitFeedbackMutation = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      if (!form?.id || !form?.orgId) throw new Error("Form not found");
+      return await createFeedback(form.id, form.orgId, data);
+    },
+    onSuccess: () => {
+      setSubmitted(true);
+      toast({
+        title: "Thank you!",
+        description: "Your feedback has been submitted successfully.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Submission failed",
+        description: error.message || "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,18 +74,34 @@ export default function PublicFeedback() {
       return;
     }
 
-    setLoading(true);
-    
-    // Simulate submission
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-      toast({
-        title: "Thank you!",
-        description: "Your feedback has been submitted successfully.",
-      });
-    }, 1000);
+    submitFeedbackMutation.mutate(formData);
   };
+
+  if (formLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-6 py-12">
+        <Card className="w-full max-w-2xl p-8 space-y-6">
+          <Skeleton className="h-8 w-64 mx-auto" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-32 w-full" />
+        </Card>
+      </div>
+    );
+  }
+
+  if (!form) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-6 py-12">
+        <Card className="w-full max-w-2xl p-12 text-center">
+          <AlertCircle className="w-16 h-16 mx-auto mb-4 text-destructive" />
+          <h2 className="text-2xl font-semibold mb-2">Form Not Found</h2>
+          <p className="text-muted-foreground">
+            The feedback form you're looking for doesn't exist or has been removed.
+          </p>
+        </Card>
+      </div>
+    );
+  }
 
   if (submitted) {
     return (
@@ -97,12 +140,12 @@ export default function PublicFeedback() {
           <div className="flex items-center justify-center gap-2 mb-2">
             <BarChart3 className="w-6 h-6 text-primary" />
             <span className="text-lg font-semibold text-muted-foreground">
-              {mockForm.orgName}
+              Feedback Form
             </span>
           </div>
-          <h1 className="text-3xl font-semibold">{mockForm.title}</h1>
+          <h1 className="text-3xl font-semibold">{form.title}</h1>
           <p className="text-muted-foreground leading-relaxed">
-            {mockForm.description}
+            {form.description}
           </p>
         </div>
 
@@ -214,10 +257,10 @@ export default function PublicFeedback() {
           <Button
             type="submit"
             className="w-full"
-            disabled={loading}
+            disabled={submitFeedbackMutation.isPending}
             data-testid="button-submit-feedback"
           >
-            {loading ? "Submitting..." : "Submit Feedback"}
+            {submitFeedbackMutation.isPending ? "Submitting..." : "Submit Feedback"}
           </Button>
         </form>
       </Card>
