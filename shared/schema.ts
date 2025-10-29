@@ -41,7 +41,7 @@ export const insertFormSchema = z.object({
 export type InsertForm = z.infer<typeof insertFormSchema>;
 
 // Feedback schema
-export type FeedbackCategory = "Complaint" | "Suggestion";
+export type FeedbackCategory = "Complaint" | "Compliment";
 
 export interface Feedback {
   id: string;
@@ -55,7 +55,7 @@ export interface Feedback {
 
 export const insertFeedbackSchema = z.object({
   message: z.string().min(10, "Feedback must be at least 10 characters"),
-  category: z.enum(["Complaint", "Suggestion"], {
+  category: z.enum(["Complaint", "Compliment"], {
     required_error: "Please select a category",
   }),
   anonymous: z.boolean().default(false),

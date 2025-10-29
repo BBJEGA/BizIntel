@@ -66,7 +66,7 @@ export default function Dashboard() {
   };
 
   const complaints = feedback.filter((f: Feedback) => f.category === "Complaint");
-  const suggestions = feedback.filter((f: Feedback) => f.category === "Suggestion");
+  const compliments = feedback.filter((f: Feedback) => f.category === "Compliment");
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString("en-US", {
@@ -238,7 +238,7 @@ export default function Dashboard() {
                 </div>
               </Card>
 
-              {/* Complaints and Suggestions - Side by Side on Mobile */}
+              {/* Complaints and Compliments - Side by Side on Mobile */}
               <div className="grid grid-cols-2 gap-4 md:gap-6">
                 {/* Complaints */}
                 <Card className="p-6 space-y-2">
@@ -260,22 +260,22 @@ export default function Dashboard() {
                   </div>
                 </Card>
 
-                {/* Suggestions */}
+                {/* Compliments */}
                 <Card className="p-6 space-y-2">
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium text-muted-foreground">
-                      Suggestions
+                      Compliments
                     </p>
                     <TrendingUp className="w-4 h-4 text-muted-foreground" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-4xl font-bold text-chart-1" data-testid="metric-suggestions">
-                      {suggestions.length}
+                    <p className="text-4xl font-bold text-chart-4" data-testid="metric-compliments">
+                      {compliments.length}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {feedback.length > 0 
-                        ? `${Math.round((suggestions.length / feedback.length) * 100)}% of total` 
-                        : "No suggestions yet"}
+                        ? `${Math.round((compliments.length / feedback.length) * 100)}% of total` 
+                        : "No compliments yet"}
                     </p>
                   </div>
                 </Card>
@@ -311,18 +311,18 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Suggestions Bar */}
+                {/* Compliments Bar */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium">Suggestions</span>
-                    <span className="text-muted-foreground">{suggestions.length}</span>
+                    <span className="font-medium">Compliments</span>
+                    <span className="text-muted-foreground">{compliments.length}</span>
                   </div>
                   <div className="h-8 bg-muted rounded-lg overflow-hidden">
                     <div 
-                      className="h-full bg-chart-1 rounded-lg transition-all duration-500"
+                      className="h-full bg-chart-4 rounded-lg transition-all duration-500"
                       style={{ 
                         width: feedback.length > 0 
-                          ? `${(suggestions.length / feedback.length) * 100}%` 
+                          ? `${(compliments.length / feedback.length) * 100}%` 
                           : '0%' 
                       }}
                     />
@@ -344,8 +344,8 @@ export default function Dashboard() {
                   <TabsTrigger value="complaints" data-testid="tab-complaints">
                     Complaints ({complaints.length})
                   </TabsTrigger>
-                  <TabsTrigger value="suggestions" data-testid="tab-suggestions">
-                    Suggestions ({suggestions.length})
+                  <TabsTrigger value="compliments" data-testid="tab-compliments">
+                    Compliments ({compliments.length})
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -376,7 +376,8 @@ export default function Dashboard() {
                             <p className="leading-relaxed">{item.message}</p>
                             <div className="flex items-center gap-3">
                               <Badge 
-                                variant={item.category === "Complaint" ? "destructive" : "default"}
+                                variant={item.category === "Complaint" ? "destructive" : undefined}
+                                className={item.category === "Compliment" ? "bg-chart-4 text-white hover:bg-chart-4/90" : ""}
                                 data-testid={`badge-category-${item.id}`}
                               >
                                 {item.category}
@@ -435,15 +436,15 @@ export default function Dashboard() {
                 )}
               </TabsContent>
 
-              <TabsContent value="suggestions" className="space-y-4">
-                {suggestions.length === 0 ? (
+              <TabsContent value="compliments" className="space-y-4">
+                {compliments.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground">
                     <TrendingUp className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>No suggestions received yet</p>
+                    <p>No compliments received yet</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {suggestions.map((item: Feedback) => (
+                    {compliments.map((item: Feedback) => (
                       <div 
                         key={item.id}
                         className="p-4 border rounded-lg hover-elevate transition-all"
@@ -452,7 +453,7 @@ export default function Dashboard() {
                           <div className="flex-1 space-y-2">
                             <p className="leading-relaxed">{item.message}</p>
                             <div className="flex items-center gap-3">
-                              <Badge variant="default">
+                              <Badge className="bg-chart-4 text-white hover:bg-chart-4/90">
                                 {item.category}
                               </Badge>
                               {item.anonymous && (

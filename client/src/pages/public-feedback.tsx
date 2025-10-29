@@ -186,21 +186,21 @@ export default function PublicFeedback() {
 
               <div className="flex items-center space-x-3 p-4 border rounded-lg hover-elevate transition-all">
                 <RadioGroupItem 
-                  value="Suggestion" 
-                  id="suggestion"
-                  data-testid="radio-suggestion"
+                  value="Compliment" 
+                  id="compliment"
+                  data-testid="radio-compliment"
                 />
                 <Label 
-                  htmlFor="suggestion" 
+                  htmlFor="compliment" 
                   className="flex-1 cursor-pointer flex items-start gap-3"
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-2 font-medium">
-                      <MessageSquare className="w-4 h-4 text-primary" />
-                      Suggestion
+                      <MessageSquare className="w-4 h-4 text-chart-4" />
+                      Compliment
                     </div>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Share an idea for improvement
+                      Share positive feedback or praise
                     </p>
                   </div>
                 </Label>
