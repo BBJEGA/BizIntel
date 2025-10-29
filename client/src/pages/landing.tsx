@@ -122,7 +122,7 @@ export default function Landing() {
               </div>
               <h3 className="text-xl font-semibold">Get Actionable Insights</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Visualize feedback trends instantly. Track complaints vs suggestions 
+                Visualize feedback trends instantly. Track complaints vs compliments 
                 with intuitive charts and comprehensive dashboards.
               </p>
             </Card>

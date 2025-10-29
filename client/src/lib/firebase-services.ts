@@ -129,13 +129,13 @@ export async function getFeedbackByFormId(formId: string): Promise<Feedback[]> {
 export async function getFeedbackStats(orgId: string): Promise<{
   total: number;
   complaints: number;
-  suggestions: number;
+  compliments: number;
 }> {
   const feedback = await getFeedbackByOrgId(orgId);
   
   return {
     total: feedback.length,
     complaints: feedback.filter(f => f.category === "Complaint").length,
-    suggestions: feedback.filter(f => f.category === "Suggestion").length,
+    compliments: feedback.filter(f => f.category === "Compliment").length,
   };
 }
