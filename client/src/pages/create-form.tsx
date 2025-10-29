@@ -238,16 +238,29 @@ export default function CreateForm() {
         <div className="border-b bg-background sticky top-0 z-10">
           <div className="max-w-4xl mx-auto px-4 md:px-8 py-4 md:py-6 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0 flex-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:hidden"
-                onClick={() => setSidebarOpen(true)}
-                aria-label="Open sidebar"
-                data-testid="button-menu"
-              >
-                <Menu className="w-5 h-5" />
-              </Button>
+              {/* Mobile: Show hamburger menu OR back button */}
+              <div className="md:hidden flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSidebarOpen(true)}
+                  aria-label="Open sidebar"
+                  data-testid="button-menu"
+                >
+                  <Menu className="w-5 h-5" />
+                </Button>
+                <Link href="/dashboard">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="gap-2 hover-elevate"
+                    data-testid="button-back-to-dashboard"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span className="text-sm">Dashboard</span>
+                  </Button>
+                </Link>
+              </div>
               <div className="min-w-0">
                 <h1 className="text-2xl md:text-3xl font-semibold truncate">My Forms</h1>
                 <p className="text-muted-foreground mt-1 hidden sm:block text-sm md:text-base">
@@ -257,7 +270,7 @@ export default function CreateForm() {
             </div>
             {!showForm && (
               <Button 
-                className="gap-2 flex-shrink-0"
+                className="gap-2 flex-shrink-0 hover-elevate active-elevate-2"
                 onClick={() => setShowForm(true)}
                 data-testid="button-new-form"
               >

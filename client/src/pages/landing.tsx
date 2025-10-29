@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -7,39 +8,88 @@ import {
   Share2, 
   Shield, 
   Zap, 
-  Users 
+  Users,
+  Menu,
+  X
 } from "lucide-react";
 import { HeroCarousel } from "@/components/hero-carousel";
 import logoImage from "@assets/a-sophisticated-corporate-logo-design-fe_V_8XqCmZREesNjSau6f7ag_W4Px38qDSEC4uspEpAH3Kw-removebg-p_1761683074267.png";
 
 export default function Landing() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Top Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-2 sm:gap-3">
             <img 
               src={logoImage} 
               alt="BizIntel Enterprise" 
-              className="w-10 h-10 object-contain"
+              className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
+              data-testid="img-logo"
             />
-            <span className="text-lg font-semibold">BizIntel Enterprise</span>
+            <span className="text-base sm:text-lg font-semibold truncate">BizIntel Enterprise</span>
           </div>
           
-          <div className="flex items-center gap-4">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-3">
             <Link href="/login">
-              <Button variant="ghost" data-testid="button-login">
+              <Button variant="ghost" className="hover-elevate" data-testid="button-login">
                 Log In
               </Button>
             </Link>
             <Link href="/register">
-              <Button variant="default" data-testid="button-get-started">
+              <Button variant="default" className="hover-elevate active-elevate-2" data-testid="button-get-started">
                 Get Started
               </Button>
             </Link>
           </div>
+
+          {/* Mobile Hamburger Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            data-testid="button-hamburger-menu"
+          >
+            {mobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </Button>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t bg-background">
+            <div className="px-4 py-4 space-y-3">
+              <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start hover-elevate" 
+                  data-testid="button-mobile-login"
+                >
+                  Log In
+                </Button>
+              </Link>
+              <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                <Button 
+                  variant="default" 
+                  className="w-full hover-elevate active-elevate-2" 
+                  data-testid="button-mobile-get-started"
+                >
+                  Get Started
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}

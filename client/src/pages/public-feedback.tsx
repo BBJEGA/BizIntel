@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useRoute } from "wouter";
+import { useRoute, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { BarChart3, CheckCircle2, MessageSquare, AlertCircle } from "lucide-react";
+import { BarChart3, CheckCircle2, MessageSquare, AlertCircle, ArrowLeft, Home } from "lucide-react";
 import { insertFeedbackSchema, type FeedbackCategory } from "@shared/schema";
 import { getFormById, createFeedback } from "@/lib/firebase-services";
 
@@ -133,24 +133,40 @@ export default function PublicFeedback() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-6 py-12">
-      <Card className="w-full max-w-2xl p-8 space-y-8">
-        {/* Organization Branding */}
-        <div className="text-center space-y-3 pb-6 border-b">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <BarChart3 className="w-6 h-6 text-primary" />
-            <span className="text-lg font-semibold text-muted-foreground">
-              Feedback Form
-            </span>
-          </div>
-          <h1 className="text-3xl font-semibold">{form.title}</h1>
-          <p className="text-muted-foreground leading-relaxed">
-            {form.description}
-          </p>
-        </div>
+    <div className="min-h-screen bg-background px-4 sm:px-6 py-8 sm:py-12">
+      {/* Back to Home Button */}
+      <div className="max-w-2xl mx-auto mb-6">
+        <Link href="/">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-2 hover-elevate -ml-2"
+            data-testid="button-back-to-home"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Home</span>
+          </Button>
+        </Link>
+      </div>
 
-        {/* Feedback Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="flex items-center justify-center">
+        <Card className="w-full max-w-2xl p-6 sm:p-8 space-y-8">
+          {/* Organization Branding */}
+          <div className="text-center space-y-3 pb-6 border-b">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <BarChart3 className="w-6 h-6 text-primary" />
+              <span className="text-lg font-semibold text-muted-foreground">
+                Feedback Form
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-semibold">{form.title}</h1>
+            <p className="text-muted-foreground leading-relaxed">
+              {form.description}
+            </p>
+          </div>
+
+          {/* Feedback Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
           {/* Category Selection */}
           <div className="space-y-3">
             <Label className="text-sm font-medium">
@@ -253,17 +269,19 @@ export default function PublicFeedback() {
             </div>
           </div>
 
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={submitFeedbackMutation.isPending}
-            data-testid="button-submit-feedback"
-          >
-            {submitFeedbackMutation.isPending ? "Submitting..." : "Submit Feedback"}
-          </Button>
-        </form>
-      </Card>
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              className="w-full hover-elevate active-elevate-2"
+              disabled={submitFeedbackMutation.isPending}
+              data-testid="button-submit-feedback"
+            >
+              {submitFeedbackMutation.isPending ? "Submitting..." : "Submit Feedback"}
+            </Button>
+          </form>
+        </Card>
+      </div>
     </div>
   );
 }
+
