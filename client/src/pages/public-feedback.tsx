@@ -79,55 +79,106 @@ export default function PublicFeedback() {
 
   if (formLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6 py-12">
-        <Card className="w-full max-w-2xl p-8 space-y-6">
-          <Skeleton className="h-8 w-64 mx-auto" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-32 w-full" />
-        </Card>
+      <div className="min-h-screen bg-background px-4 sm:px-6 py-8 sm:py-12">
+        {/* Back to Home Button */}
+        <div className="max-w-2xl mx-auto mb-6">
+          <Link href="/">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-2 hover-elevate -ml-2"
+              data-testid="button-back-to-home"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Home</span>
+            </Button>
+          </Link>
+        </div>
+
+        <div className="flex items-center justify-center">
+          <Card className="w-full max-w-2xl p-8 space-y-6">
+            <Skeleton className="h-8 w-64 mx-auto" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </Card>
+        </div>
       </div>
     );
   }
 
   if (!form) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6 py-12">
-        <Card className="w-full max-w-2xl p-12 text-center">
-          <AlertCircle className="w-16 h-16 mx-auto mb-4 text-destructive" />
-          <h2 className="text-2xl font-semibold mb-2">Form Not Found</h2>
-          <p className="text-muted-foreground">
-            The feedback form you're looking for doesn't exist or has been removed.
-          </p>
-        </Card>
+      <div className="min-h-screen bg-background px-4 sm:px-6 py-8 sm:py-12">
+        {/* Back to Home Button */}
+        <div className="max-w-2xl mx-auto mb-6">
+          <Link href="/">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-2 hover-elevate -ml-2"
+              data-testid="button-back-to-home"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Home</span>
+            </Button>
+          </Link>
+        </div>
+
+        <div className="flex items-center justify-center">
+          <Card className="w-full max-w-2xl p-12 text-center">
+            <AlertCircle className="w-16 h-16 mx-auto mb-4 text-destructive" />
+            <h2 className="text-2xl font-semibold mb-2">Form Not Found</h2>
+            <p className="text-muted-foreground">
+              The feedback form you're looking for doesn't exist or has been removed.
+            </p>
+          </Card>
+        </div>
       </div>
     );
   }
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6 py-12">
-        <Card className="w-full max-w-2xl p-12 text-center space-y-6">
-          <div className="w-16 h-16 rounded-full bg-chart-4/10 flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-8 h-8 text-chart-4" />
-          </div>
-          <div className="space-y-2">
-            <h2 className="text-2xl font-semibold">Feedback Submitted!</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Thank you for taking the time to share your thoughts with us. 
-              Your feedback helps us improve our services.
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setSubmitted(false);
-              setFormData({ message: "", category: "" as FeedbackCategory, anonymous: false });
-            }}
-            data-testid="button-submit-another"
-          >
-            Submit Another Response
-          </Button>
-        </Card>
+      <div className="min-h-screen bg-background px-4 sm:px-6 py-8 sm:py-12">
+        {/* Back to Home Button */}
+        <div className="max-w-2xl mx-auto mb-6">
+          <Link href="/">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-2 hover-elevate -ml-2"
+              data-testid="button-back-to-home"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Home</span>
+            </Button>
+          </Link>
+        </div>
+
+        <div className="flex items-center justify-center">
+          <Card className="w-full max-w-2xl p-12 text-center space-y-6">
+            <div className="w-16 h-16 rounded-full bg-chart-4/10 flex items-center justify-center mx-auto">
+              <CheckCircle2 className="w-8 h-8 text-chart-4" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold">Feedback Submitted!</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                Thank you for taking the time to share your thoughts with us. 
+                Your feedback helps us improve our services.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSubmitted(false);
+                setFormData({ message: "", category: "" as FeedbackCategory, anonymous: false });
+              }}
+              data-testid="button-submit-another"
+            >
+              Submit Another Response
+            </Button>
+          </Card>
+        </div>
       </div>
     );
   }

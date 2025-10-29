@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -17,6 +17,23 @@ import logoImage from "@assets/a-sophisticated-corporate-logo-design-fe_V_8XqCmZ
 
 export default function Landing() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    if (mobileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [mobileMenuOpen]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -67,7 +84,7 @@ export default function Landing() {
 
         {/* Mobile Menu Dropdown */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t bg-background">
+          <div ref={mobileMenuRef} className="md:hidden border-t bg-background">
             <div className="px-4 py-4 space-y-3">
               <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
                 <Button 
