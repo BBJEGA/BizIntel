@@ -6,7 +6,14 @@ A professional B2B SaaS feedback management platform built with React, Vite, and
 ## Recent Changes
 **Date: October 29, 2025**
 
-**Latest: Replaced "Suggestion" with "Compliment" Throughout Application**
+**Latest: Enhanced Navigation with Back Buttons and Hover Effects**
+- ✅ Added "Back to Dashboard" button on Create Form page (mobile view)
+- ✅ Added "Back to Home" button on Public Feedback page
+- ✅ All navigation buttons now use proper hover effects (hover-elevate, active-elevate-2)
+- ✅ Improved mobile UX with consistent back navigation patterns
+- ✅ All buttons use React Router's Link component for smooth in-app navigation
+
+**Earlier Today: Replaced "Suggestion" with "Compliment" Throughout Application**
 - ✅ Updated TypeScript schema: FeedbackCategory now "Complaint" | "Compliment"
 - ✅ Modified public feedback form to display "Compliment" option with green color (chart-4)
 - ✅ Updated dashboard analytics to show "Compliments" instead of "Suggestions":
