@@ -3,7 +3,6 @@ import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
@@ -12,7 +11,6 @@ import {
   Plus, 
   TrendingUp, 
   AlertCircle,
-  Calendar,
   LogOut,
   FileText,
   Home,
@@ -20,15 +18,17 @@ import {
   X
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import { getFeedbackByOrgId } from "@/lib/firebase-services";
+import { getFeedbackByOrgId, resetInsightAggregateCounts } from "@/lib/firebase-services";
 import type { Feedback } from "@shared/schema";
 import { cn } from "@/lib/utils";
+import Feedbacks from "@/components/Feedbacks";
+import Leads from "@/components/Leads";
 import logoImage from "@assets/a-sophisticated-corporate-logo-design-fe_V_8XqCmZREesNjSau6f7ag_W4Px38qDSEC4uspEpAH3Kw-removebg-p_1761683074267.png";
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const { user, organization, logout, loading: authLoading } = useAuth();
-  const [selectedTab, setSelectedTab] = useState("all");
+  const [selectedTab, setSelectedTab] = useState("feedbacks");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Redirect if not logged in
@@ -55,7 +55,12 @@ export default function Dashboard() {
     queryKey: ["/api/feedback", orgId],
     queryFn: async () => {
       if (!orgId) return [];
-      return await getFeedbackByOrgId(orgId);
+      console.log("[dashboard] fetch orgId:", orgId);
+      const records = await getFeedbackByOrgId(orgId);
+      if (records.length === 0) {
+        await resetInsightAggregateCounts(orgId);
+      }
+      return records;
     },
     enabled: !!orgId,
   });
@@ -336,139 +341,38 @@ export default function Dashboard() {
           <Card className="p-6">
             <Tabs value={selectedTab} onValueChange={setSelectedTab}>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-medium">Recent Feedback</h2>
+                <h2 className="text-lg font-medium">Organization Data</h2>
                 <TabsList>
-                  <TabsTrigger value="all" data-testid="tab-all">
-                    All ({feedback.length})
+                  <TabsTrigger value="feedbacks" data-testid="tab-feedbacks">
+                    Feedbacks ({feedback.length})
                   </TabsTrigger>
-                  <TabsTrigger value="complaints" data-testid="tab-complaints">
-                    Complaints ({complaints.length})
-                  </TabsTrigger>
-                  <TabsTrigger value="compliments" data-testid="tab-compliments">
-                    Compliments ({compliments.length})
+                  <TabsTrigger value="leads" data-testid="tab-leads">
+                    Leads
                   </TabsTrigger>
                 </TabsList>
               </div>
 
-              <TabsContent value="all" className="space-y-4">
+              <TabsContent value="feedbacks" className="space-y-4">
                 {isLoading ? (
                   <div className="space-y-3">
                     {[1, 2, 3].map((i) => (
                       <Skeleton key={i} className="h-24 w-full" />
                     ))}
                   </div>
-                ) : feedback.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>No feedback received yet</p>
-                    <p className="text-sm mt-2">Create a form and share it to start collecting feedback</p>
-                  </div>
                 ) : (
-                  <div className="space-y-3">
-                    {feedback.map((item: Feedback) => (
-                      <div 
-                        key={item.id}
-                        className="p-4 border rounded-lg hover-elevate transition-all"
-                        data-testid={`feedback-${item.id}`}
-                      >
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1 space-y-2">
-                            <p className="leading-relaxed">{item.message}</p>
-                            <div className="flex items-center gap-3">
-                              <Badge 
-                                variant={item.category === "Complaint" ? "destructive" : undefined}
-                                className={item.category === "Compliment" ? "bg-chart-4 text-white hover:bg-chart-4/90" : ""}
-                                data-testid={`badge-category-${item.id}`}
-                              >
-                                {item.category}
-                              </Badge>
-                              {item.anonymous && (
-                                <Badge variant="outline" data-testid={`badge-anonymous-${item.id}`}>
-                                  Anonymous
-                                </Badge>
-                              )}
-                              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                {formatDate(item.createdAt)}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <Feedbacks feedback={feedback} formatDate={formatDate} />
                 )}
               </TabsContent>
 
-              <TabsContent value="complaints" className="space-y-4">
-                {complaints.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <AlertCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>No complaints received yet</p>
-                  </div>
-                ) : (
+              <TabsContent value="leads" className="space-y-4">
+                {isLoading ? (
                   <div className="space-y-3">
-                    {complaints.map((item: Feedback) => (
-                      <div 
-                        key={item.id}
-                        className="p-4 border rounded-lg hover-elevate transition-all"
-                      >
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1 space-y-2">
-                            <p className="leading-relaxed">{item.message}</p>
-                            <div className="flex items-center gap-3">
-                              <Badge variant="destructive">
-                                {item.category}
-                              </Badge>
-                              {item.anonymous && (
-                                <Badge variant="outline">Anonymous</Badge>
-                              )}
-                              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                {formatDate(item.createdAt)}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                    {[1, 2].map((i) => (
+                      <Skeleton key={i} className="h-20 w-full" />
                     ))}
                   </div>
-                )}
-              </TabsContent>
-
-              <TabsContent value="compliments" className="space-y-4">
-                {compliments.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <TrendingUp className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>No compliments received yet</p>
-                  </div>
                 ) : (
-                  <div className="space-y-3">
-                    {compliments.map((item: Feedback) => (
-                      <div 
-                        key={item.id}
-                        className="p-4 border rounded-lg hover-elevate transition-all"
-                      >
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1 space-y-2">
-                            <p className="leading-relaxed">{item.message}</p>
-                            <div className="flex items-center gap-3">
-                              <Badge className="bg-chart-4 text-white hover:bg-chart-4/90">
-                                {item.category}
-                              </Badge>
-                              {item.anonymous && (
-                                <Badge variant="outline">Anonymous</Badge>
-                              )}
-                              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                {formatDate(item.createdAt)}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <Leads feedback={feedback} />
                 )}
               </TabsContent>
             </Tabs>

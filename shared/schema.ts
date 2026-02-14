@@ -50,6 +50,11 @@ export interface Feedback {
   message: string;
   category: FeedbackCategory;
   anonymous: boolean;
+  meta: {
+    name: string;
+    email: string;
+    location: string;
+  };
   createdAt: number;
 }
 
@@ -59,6 +64,11 @@ export const insertFeedbackSchema = z.object({
     required_error: "Please select a category",
   }),
   anonymous: z.boolean().default(false),
+  meta: z.object({
+    name: z.string().default(""),
+    email: z.string().default(""),
+    location: z.string().default(""),
+  }).default({ name: "", email: "", location: "" }),
 });
 
 export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;

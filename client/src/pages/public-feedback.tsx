@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -22,6 +23,11 @@ export default function PublicFeedback() {
     message: "",
     category: "" as FeedbackCategory,
     anonymous: false,
+    meta: {
+      name: "",
+      email: "",
+      location: "",
+    },
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -36,12 +42,15 @@ export default function PublicFeedback() {
   });
 
   // Submit feedback mutation
+  console.log("[public-feedback] fetch orgId:", form?.orgId || "");
+
   const submitFeedbackMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
       if (!form?.id || !form?.orgId) throw new Error("Form not found");
       return await createFeedback(form.id, form.orgId, data);
     },
     onSuccess: () => {
+      console.log("[public-feedback] submitted feedback orgId:", form?.orgId || "");
       setSubmitted(true);
       toast({
         title: "Thank you!",
@@ -171,7 +180,12 @@ export default function PublicFeedback() {
               variant="outline"
               onClick={() => {
                 setSubmitted(false);
-                setFormData({ message: "", category: "" as FeedbackCategory, anonymous: false });
+                setFormData({
+                  message: "",
+                  category: "" as FeedbackCategory,
+                  anonymous: false,
+                  meta: { name: "", email: "", location: "" },
+                });
               }}
               data-testid="button-submit-another"
             >
@@ -295,6 +309,53 @@ export default function PublicFeedback() {
             {errors.message && (
               <p className="text-sm text-destructive">{errors.message}</p>
             )}
+          </div>
+
+
+          {/* Contact Meta */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-sm font-medium">Name</Label>
+              <Input
+                id="name"
+                placeholder="Your name"
+                value={formData.meta.name}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  meta: { ...formData.meta, name: e.target.value },
+                })}
+                data-testid="input-meta-name"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={formData.meta.email}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  meta: { ...formData.meta, email: e.target.value },
+                })}
+                data-testid="input-meta-email"
+              />
+            </div>
+
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="location" className="text-sm font-medium">Location</Label>
+              <Input
+                id="location"
+                placeholder="City / State"
+                value={formData.meta.location}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  meta: { ...formData.meta, location: e.target.value },
+                })}
+                data-testid="input-meta-location"
+              />
+            </div>
           </div>
 
           {/* Anonymous Option */}
